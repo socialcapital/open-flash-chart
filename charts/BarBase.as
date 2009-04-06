@@ -91,6 +91,7 @@
 				tip:		this.style.tip,
 				alpha:		this.style.alpha,
 				'on-click':	this.style['on-click'],
+				'on-hover': this.style['on-hover'],
 				axis:		this.style.axis
 			};
 			

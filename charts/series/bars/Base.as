@@ -43,6 +43,9 @@
 			//
 			if( value['on-click'] )
 				this.set_on_click( value['on-click'] );
+			
+			if( value['on-hover'] )
+				this.set_on_hover( value['on-hover'] );
 				
 			if ( value.axis )
 				if ( value.axis == 'right' )

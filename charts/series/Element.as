@@ -1,18 +1,17 @@
 ﻿package charts.series {
 	
-	import charts.series.has_tooltip;
+	import caurina.transitions.Equations;
+	import caurina.transitions.Tweener;
+	
+	import elements.axis.XAxisLabels;
+	
 	import flash.display.Sprite;
-	import string.Utils;
-	import global.Global;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import caurina.transitions.Tweener;
-	import caurina.transitions.Equations;
+	import flash.external.ExternalInterface;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	import flash.external.ExternalInterface;
-	import elements.axis.XAxisLabels;
 	
 	public class Element extends Sprite implements has_tooltip {
 		//
@@ -24,6 +23,7 @@
 		public var index:Number;
 		protected var tooltip:String;
 		private var link:String;
+		private var hover_link:String = null;
 		public var is_tip:Boolean;
 		
 		public var line_mask:Sprite;
@@ -101,6 +101,18 @@
 			this.useHandCursor = true;
 			// weak references so the garbage collector will kill it:
 			this.addEventListener(MouseEvent.MOUSE_UP, this.mouseUp, false, 0, true);
+		}
+		
+		public function set_on_hover( s:String ):void {
+			this.hover_link = s;
+			this.buttonMode = true;
+			this.useHandCursor = true;
+			
+			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseHover, false, 0, true);
+		}
+		
+		public function mouseHover(event:Event){
+			ExternalInterface.call( this.hover_link, this.index );
 		}
 		
 		private function mouseUp(event:Event):void {
