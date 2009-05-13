@@ -32,5 +32,19 @@
 			
 			return false;
 		}
+		
+		public static function has_histogram_chart( json:Object ): Boolean
+		{
+			
+			var elements:Array = json['elements'] as Array;
+			
+			for( var i:Number = 0; i < elements.length; i++ )
+			{	
+				if ( elements[i]['type'] == 'histogram' )
+					return true;
+			}
+			
+			return false;
+		}
 	}
 }

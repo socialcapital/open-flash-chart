@@ -364,6 +364,31 @@ package {
 			return { y:top, width:group_width };
 		}
 		
+		//
+		// index: the n'th bar from the left
+		//
+		public function get_histogram_coords( index:Number, group:Number ):Object {
+			var item_width:Number = this.width_() / this.x_range.count();
+			
+			// the bar(s) have gaps between them:
+			var bar_set_width:Number = item_width;
+			
+			// get the margin between sets of bars:
+			var tmp:Number = 0;
+			//if( this.x_offset )
+				tmp = item_width;
+			
+			// 1 bar == 100% wide, 2 bars = 50% wide each
+			var bar_width:Number = bar_set_width / this.bar_groups;
+			//bar_width -= 0.001;		// <-- hack so bars don't quite touch
+			
+			var bar_left:Number = this.left_()+((tmp-bar_set_width)/2);
+			var left:Number = bar_left+(index*item_width);
+			left += bar_width * group;
+			
+			return { x:left, width:bar_width };
+		}
+		
 		
 		public function makePointHLC( x:Number, high:Number, close:Number, low:Number, right_axis:Boolean, group:Number, group_count:Number )
 		:PointHLC {

@@ -9,7 +9,7 @@ package elements.axis {
 	
 	public class XAxis extends Sprite {
 
-		private var steps:Number;
+		protected var steps:Number;
 		private var alt_axis_colour:Number;
 		private var alt_axis_step:Number;
 		private var three_d:Boolean;
@@ -26,7 +26,7 @@ package elements.axis {
 		// make this private
 		public var labels:XAxisLabels;
 
-		private var style:Object;
+		protected var style:Object;
 		
 		function XAxis( json:Object, min:Number, max:Number )
 		{

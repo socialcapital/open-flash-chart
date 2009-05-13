@@ -1,62 +1,55 @@
 
 package  {
-	import charts.series.Element;
 	import charts.Factory;
 	import charts.ObjectCollection;
-	import elements.menu.Menu;
 	import charts.series.has_tooltip;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
-	// for image upload:
-	import flash.events.ProgressEvent;
-	import flash.net.URLVariables;
-	
-	import flash.display.Sprite;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import string.Utils;
-	import global.Global;
-	import com.serialization.json.JSON;
-	import flash.external.ExternalInterface;
-	import flash.ui.ContextMenu;
-	import flash.ui.ContextMenuItem;
-	import flash.events.IOErrorEvent;
-	import flash.events.ContextMenuEvent;
-	import flash.system.System;
-	
-	import flash.display.LoaderInfo;
-
-	// export the chart as an image
 	import com.adobe.images.PNGEncoder;
-	import com.adobe.images.JPGEncoder;
-	import mx.utils.Base64Encoder;
-	// import com.dynamicflash.util.Base64;
-	import flash.display.BitmapData;
-	import flash.utils.ByteArray;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
-	import flash.net.URLLoaderDataFormat;
+	import com.serialization.json.JSON;
+	
+	import elements.Background;
+	import elements.axis.RadarAxis;
+	import elements.axis.HistogramXAxis;
 	import elements.axis.XAxis;
-	import elements.axis.XAxisLabels;
 	import elements.axis.YAxisBase;
 	import elements.axis.YAxisLeft;
 	import elements.axis.YAxisRight;
-	import elements.axis.RadarAxis;
-	import elements.Background;
-	import elements.labels.XLegend;
-	import elements.labels.Title;
 	import elements.labels.Keys;
+	import elements.labels.Title;
+	import elements.labels.XLegend;
 	import elements.labels.YLegendBase;
 	import elements.labels.YLegendLeft;
 	import elements.labels.YLegendRight;
+	import elements.menu.Menu;
+	
+	import flash.display.BitmapData;
+	import flash.display.LoaderInfo;
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.events.ContextMenuEvent;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.MouseEvent;
+	import flash.events.ProgressEvent;
+	import flash.external.ExternalInterface;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
+	import flash.net.URLRequestMethod;
+	import flash.ui.ContextMenu;
+	import flash.ui.ContextMenuItem;
+	import flash.utils.ByteArray;
+	
+	import global.Global;
+	
+	import mx.utils.Base64Encoder;
 	
 	
 	public class main extends Sprite {
 		
-		public  var VERSION:String = "2 Ichor";
+		public  var VERSION:String = "2";
 		private var title:Title = null;
 		//private var x_labels:XAxisLabels;
 		private var x_axis:XAxis;
@@ -93,7 +86,8 @@ package  {
 			{
 				// no data found -- debug mode?
 				try {
-					var file:String = "../../data-files/menu.txt";
+					//var file:String = "../../data-files/menu.txt";
+					var file:String = "data.json";
 					//var file:String = "../../data-files/radar-2.txt";
 					//var file:String = "../../../test-data-files/stack.txt";
 					this.load_external_file( file );
@@ -701,6 +695,9 @@ package  {
 				this.addChild( this.radar_axis );
 				this.addChild( this.keys );
 				
+			}else if (JsonInspector.has_histogram_chart( json ) )
+			{
+				this.build_histogram_chart_background( json );
 			}
 			else if ( !JsonInspector.has_pie_chart( json ) )
 			{
@@ -746,6 +743,47 @@ package  {
 			this.y_legend		= new YLegendLeft( json );
 			this.y_legend_2		= new YLegendRight( json );
 			this.x_axis			= new XAxis( json, this.obs.get_min_x(), this.obs.get_max_x() );
+			this.y_axis			= new YAxisLeft( json );
+			this.y_axis_right	= new YAxisRight( json );
+			
+			// access all our globals through this:
+			var g:Global = Global.getInstance();
+			// this is needed by all the elements tooltip
+			g.x_labels = this.x_axis.labels;
+			g.x_legend = this.x_legend;
+
+			//  can pick up X Axis labels for the
+			// tooltips
+			this.obs.tooltip_replace_labels( this.x_axis.labels );
+			//
+			//
+			//
+			
+			this.keys = new Keys( this.obs );
+			
+			this.addChild( this.x_legend );
+			this.addChild( this.y_legend );
+			this.addChild( this.y_legend_2 );
+			this.addChild( this.y_axis );
+			this.addChild( this.y_axis_right );
+			this.addChild( this.x_axis );
+			this.addChild( this.keys );
+		}
+		
+		//
+		// Histogram Charts have no offset to labels, but do offset the elements
+		//
+		private function build_histogram_chart_background( json:Object ):void {
+			//
+			// This reads all the 'elements' of the chart
+			// e.g. bars and lines, then creates them as sprites
+			//
+			this.obs			= Factory.MakeChart( json );
+			//
+			this.x_legend		= new XLegend( json.x_legend );			
+			this.y_legend		= new YLegendLeft( json );
+			this.y_legend_2		= new YLegendRight( json );
+			this.x_axis			= new HistogramXAxis( json, this.obs.get_min_x(), this.obs.get_max_x() );
 			this.y_axis			= new YAxisLeft( json );
 			this.y_axis_right	= new YAxisRight( json );
 			

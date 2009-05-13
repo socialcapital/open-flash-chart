@@ -44,6 +44,11 @@ package charts {
 						collection.add( new HBar( elements[i] ) );
 						bar_group++;
 						break;
+					
+					case 'histogram':
+						collection.add( new Histogram( elements[i], bar_group ) );
+						bar_group++;
+						break;
 						
 					case 'bar_stack':
 						collection.add( new BarStack( elements[i], c, bar_group ) );

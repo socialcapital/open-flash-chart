@@ -3,8 +3,8 @@
 package elements.axis {
 	
 	import flash.display.Sprite;
-    import flash.text.TextField;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
 	
 	public class AxisLabel extends TextField {
 		public var xAdj:Number = 0;
