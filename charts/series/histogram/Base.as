@@ -1,13 +1,13 @@
 package charts.series.histogram {
 
+	import caurina.transitions.Equations;
+	import caurina.transitions.Tweener;
+	
+	import charts.series.Element;
+	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.display.Sprite;
-	import caurina.transitions.Tweener;
-	import caurina.transitions.Equations;
 	import flash.geom.Point;
-	import global.Global;
-	import charts.series.Element;
 	
 	public class Base extends Element
 	{
@@ -17,6 +17,11 @@ package charts.series.histogram {
 		protected var top:Number;
 		protected var bottom:Number;
 		protected var mouse_out_alpha:Number;
+		protected var _alpha:Number;
+		
+		protected var kl_selector:Number = 0;
+		protected var kl_selector_stub_size:Number = 0;
+		
 		
 		public function Base( index:Number, value:Object, colour:Number, tooltip:String, alpha:Number, group:Number )
 		{
@@ -29,8 +34,9 @@ package charts.series.histogram {
 			this.group = group;
 			this.visible = true;
 			
+			this._alpha = alpha;
 			// remember what our original alpha is:
-			this.mouse_out_alpha = alpha;
+			this.mouse_out_alpha = 1.0;
 			// set the sprit alpha:
 			this.alpha = this.mouse_out_alpha;
 			
@@ -46,7 +52,11 @@ package charts.series.histogram {
 			
 			if( value['on-hover'] )
 				this.set_on_hover( value['on-hover'] );
-				
+			
+			if( value['kl-selector-size'] )
+				this.kl_selector = value['kl-selector-size'];
+			if( value['kl-selector-stub-size'] )
+				this.kl_selector_stub_size = value['kl-selector-stub-size'];
 			if ( value.axis )
 				if ( value.axis == 'right' )
 					this.right_axis = true;
@@ -107,7 +117,9 @@ package charts.series.histogram {
 		}
 		
 		// override this:
-		public override function resize( sc:ScreenCoordsBase ):void {}
+		public override function resize( sc:ScreenCoordsBase ):void {
+			this.cached_sc = sc;
+		}
 		
 		//
 		// tooltip.left for bars center over the bar

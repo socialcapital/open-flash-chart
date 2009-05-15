@@ -16,7 +16,7 @@ package elements {
 			if( json.bg_colour != undefined )
 				this.colour = Utils.get_colour( json.bg_colour );
 			else
-				this.colour = 0xf8f8d8;		// <-- default to Ivory
+				this.colour = 0xFFFFFF;		// <-- default to Ivory
 			
 			if ( json.bg_image != undefined )
 				this.load_img( json.bg_image );

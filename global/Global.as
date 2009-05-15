@@ -1,8 +1,9 @@
 package global {
 	
-	import elements.axis.AxisLabel;
-	import elements.labels.XLegend;
+	import charts.series.Element;
+	
 	import elements.axis.XAxisLabels;
+	import elements.labels.XLegend;
 	
 	public class Global {
 		private static var instance:Global = null;
@@ -11,6 +12,11 @@ package global {
 		public var x_labels:XAxisLabels;
 		public var x_legend:XLegend;
 		private var tooltip:String;
+		
+		public var kl_color_scheme:Object;
+		public var selected_element:Element;
+		
+		public var kl_selector_labels:Array;
 		
 		public function Global() {
 		}

@@ -32,7 +32,7 @@ package elements.axis {
 		{
 			// default values
 			this.style = {
-				stroke:			2,
+				stroke:			1,
 				'tick-height':	3,
 				colour:			'#784016',
 				offset:			true,
@@ -154,7 +154,7 @@ package elements.axis {
 							}
 							
 							this.user_ticks = true;
-							this.user_labels.push(tmpObj);
+							//this.user_labels.push(tmpObj);
 						}
 					}
 				}

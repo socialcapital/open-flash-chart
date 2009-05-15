@@ -13,6 +13,8 @@
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
+	import global.Global;
+	
 	public class Element extends Sprite implements has_tooltip {
 		//
 		// for line data
@@ -29,6 +31,9 @@
 		public var line_mask:Sprite;
 		protected var right_axis:Boolean;
 		
+		protected var selected:Boolean = false;
+		protected var cached_sc:ScreenCoordsBase;
+		
 		
 		public function Element()
 		{
@@ -36,7 +41,7 @@
 		}
 		
 		public function resize( sc:ScreenCoordsBase ):void {
-			
+			this.cached_sc = sc;
 			var p:flash.geom.Point = sc.get_get_x_from_pos_and_y_from_val( this._x, this._y, this.right_axis );
 			this.x = p.x;
 			this.y = p.y;
@@ -116,6 +121,10 @@
 		}
 		
 		private function mouseUp(event:Event):void {
+			var ele:Element = Global.getInstance().selected_element;
+			Global.getInstance().selected_element = this;
+			if ( ele != null )
+				ele.resize(this.cached_sc);
 			
 			if ( this.link.substring(0, 6) == 'trace:' ) {
 				// for the test JSON files:
@@ -127,6 +136,7 @@
 				this.browse_url( this.link );
 			else
 				ExternalInterface.call( this.link, this.index );
+			this.resize(this.cached_sc);
 		}
 			
 		private function browse_url( url:String ):void {

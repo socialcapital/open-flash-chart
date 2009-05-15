@@ -31,7 +31,7 @@ package elements.axis {
 			
 			this.colour = Utils.get_colour( style.colour );
 			this.grid_colour = Utils.get_colour( style['grid-colour'] );
-			this.stroke = style.stroke;
+			this.stroke = 1;//style.stroke;
 			this.tick_length = style['tick-length'];
 			
 			// try to avoid infinate loops...

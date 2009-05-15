@@ -20,7 +20,7 @@
 				text:				'',		// <-- default not display a key
 				'font-size':		12,
 				tip:				'#val#<br>#x_label#',
-				alpha:				0.6,
+				alpha:				1,
 				'on-click':			null,
 				'axis':				'left'
 			};
@@ -92,6 +92,8 @@
 				alpha:		this.style.alpha,
 				'on-click':	this.style['on-click'],
 				'on-hover': this.style['on-hover'],
+				'kl-selector-size': this.style['kl-selector-size'],
+				'kl-selector-stub-size': this.style['kl-selector-stub-size'],
 				axis:		this.style.axis
 			};
 			

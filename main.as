@@ -8,8 +8,8 @@ package  {
 	import com.serialization.json.JSON;
 	
 	import elements.Background;
-	import elements.axis.RadarAxis;
 	import elements.axis.HistogramXAxis;
+	import elements.axis.RadarAxis;
 	import elements.axis.XAxis;
 	import elements.axis.YAxisBase;
 	import elements.axis.YAxisLeft;
@@ -46,6 +46,8 @@ package  {
 	
 	import mx.utils.Base64Encoder;
 	
+	import string.Utils;
+	
 	
 	public class main extends Sprite {
 		
@@ -70,6 +72,9 @@ package  {
 		private var id:String;
 		private var chart_parameters:Object;
 		private var menu:Menu;
+		
+		private var space_below_graph:Number = 0;
+		private var kl_color_scheme:Object = null;
 		
 		public function main() {
 			this.chart_parameters = LoaderInfo(this.loaderInfo).parameters;
@@ -582,12 +587,16 @@ package  {
 				this.x_axis.first_label_width(),
 				this.x_axis.last_label_width(),
 				false );
+			
+			//the space below the graph
+			this.sc.bottom -= this.get_space_below_graph(sc);
+			this.sc.height -= this.get_space_below_graph(sc);
 
 			this.sc.set_bar_groups(this.obs.groups);
 				
 			this.x_axis.resize( sc,
 				// can we remove this:
-				this.stage.stageHeight-(this.x_legend.get_height()+this.x_axis.labels.get_height())	// <-- up from the bottom
+				this.stage.stageHeight-(this.x_legend.get_height()+this.x_axis.labels.get_height()) - this.get_space_below_graph(sc)	// <-- up from the bottom
 				);
 			this.y_axis.resize( this.y_legend.get_width(), sc );
 			this.y_axis_right.resize( 0, sc );
@@ -722,6 +731,20 @@ package  {
 				this.addChild(this.menu);
 			}
 			
+			if (json['space-under-graph']){
+				this.space_below_graph = json['space-under-graph'];
+			}
+			
+			if (json['kl-color-scheme']){
+				this.kl_color_scheme = new Object();
+				for ( var color:String in json['kl-color-scheme'] ){
+					trace(color);
+					this.kl_color_scheme[color] = string.Utils.get_colour( json['kl-color-scheme'][color] );
+				}
+			}
+			
+			Global.getInstance().kl_color_scheme = this.kl_color_scheme;
+			
 			this.ok = true;
 			this.resize();
 			
@@ -792,6 +815,8 @@ package  {
 			// this is needed by all the elements tooltip
 			g.x_labels = this.x_axis.labels;
 			g.x_legend = this.x_legend;
+			
+			g.kl_selector_labels = json.x_axis["kl-selector-labels"];
 
 			//  can pick up X Axis labels for the
 			// tooltips
@@ -891,6 +916,10 @@ package  {
 //			}
 //			else
 				return NumberUtils.format(val,2,true,true,false);
+		}
+		
+		private function get_space_below_graph( sc:ScreenCoordsBase ):Number{
+			return this.space_below_graph * sc.height;
 		}
 
 
