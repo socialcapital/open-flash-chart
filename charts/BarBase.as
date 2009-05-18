@@ -94,6 +94,8 @@
 				'on-hover': this.style['on-hover'],
 				'kl-selector-size': this.style['kl-selector-size'],
 				'kl-selector-stub-size': this.style['kl-selector-stub-size'],
+				'kl-two-tone-top-color': this.style['kl-two-tone-top-color'],
+				'kl-two-tone-values': this.style['kl-two-tone-values'],
 				axis:		this.style.axis
 			};
 			

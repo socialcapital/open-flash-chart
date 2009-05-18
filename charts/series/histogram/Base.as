@@ -9,6 +9,8 @@ package charts.series.histogram {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
+	import string.Utils;
+	
 	public class Base extends Element
 	{
 		protected var tip_pos:flash.geom.Point;
@@ -21,6 +23,8 @@ package charts.series.histogram {
 		
 		protected var kl_selector:Number = 0;
 		protected var kl_selector_stub_size:Number = 0;
+		protected var kl_two_tone_values:Array = null;
+		protected var kl_two_tone_top_color:uint = 0;
 		
 		
 		public function Base( index:Number, value:Object, colour:Number, tooltip:String, alpha:Number, group:Number )
@@ -57,6 +61,14 @@ package charts.series.histogram {
 				this.kl_selector = value['kl-selector-size'];
 			if( value['kl-selector-stub-size'] )
 				this.kl_selector_stub_size = value['kl-selector-stub-size'];
+				
+			if( value['kl-two-tone-values'] ){
+				this.kl_two_tone_values = value['kl-two-tone-values'];
+				
+				if( value['kl-two-tone-top-color'] )
+					this.kl_two_tone_top_color = string.Utils.get_colour(value['kl-two-tone-top-color']);
+			}
+			
 			if ( value.axis )
 				if ( value.axis == 'right' )
 					this.right_axis = true;

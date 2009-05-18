@@ -596,7 +596,7 @@ package  {
 				
 			this.x_axis.resize( sc,
 				// can we remove this:
-				this.stage.stageHeight-(this.x_legend.get_height()+this.x_axis.labels.get_height()) - this.get_space_below_graph(sc)	// <-- up from the bottom
+				this.stage.stageHeight-(this.x_legend.get_height()+this.x_axis.labels.get_height()) - this.get_space_below_graph(sc)*1.3	// <-- up from the bottom
 				);
 			this.y_axis.resize( this.y_legend.get_width(), sc );
 			this.y_axis_right.resize( 0, sc );
@@ -816,6 +816,7 @@ package  {
 			g.x_labels = this.x_axis.labels;
 			g.x_legend = this.x_legend;
 			
+			// make the kl-labels available to elements via Global
 			g.kl_selector_labels = json.x_axis["kl-selector-labels"];
 
 			//  can pick up X Axis labels for the

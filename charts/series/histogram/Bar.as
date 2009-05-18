@@ -1,13 +1,15 @@
 package charts.series.histogram {
+	import charts.Base;
 	
 	import elements.axis.AxisLabel;
 	
 	import flash.display.JointStyle;
 	import flash.events.Event;
+	import flash.text.TextFormat;
 	
 	import global.Global;
 	
-	public class Bar extends Base {
+	public class Bar extends charts.series.histogram.Base {
 	
 		protected var is_hovered:Boolean = false;
 		protected var screen_coords:ScreenCoordsBase = null;
@@ -15,12 +17,14 @@ package charts.series.histogram {
 		protected var label:AxisLabel;
 		
 		public function Bar( index:Number, style:Object, group:Number ) {
-			
 			super(index, style, style.colour, style.tip, style.alpha, group);
+			Global.getInstance().selected_element = this;
 		}
 		
 		private function do_resize( sc:ScreenCoordsBase ):void {
 			var h:Object = this.resize_helper( sc as ScreenCoords );
+			
+			this.hide_default_labels();
 			
 			if ( this.label != null )
 				this.label.visible = false;
@@ -36,13 +40,7 @@ package charts.series.histogram {
 				this.set_line(true);
 			}
 			
-			this.graphics.moveTo( 0, 0 );
-			this.graphics.beginFill( this.colour, this._alpha );
-			this.graphics.lineTo( h.width, 0 );
-			this.graphics.lineTo( h.width, h.height );
-			this.graphics.lineTo( 0, h.height );
-			this.graphics.lineTo( 0, 0 );
-			this.graphics.endFill();
+			this.draw_bar(h);
 			
 			if (this.is_selected()){
 				this.draw_selector(h, sc, Global.getInstance().kl_color_scheme["grey-selector"]);
@@ -75,9 +73,9 @@ package charts.series.histogram {
 		}
 		
 		private function draw_selector( h:Object, sc:ScreenCoordsBase, color:uint ):void{
-			this.draw_label();
+			this.draw_label(h);
 			
-			this.graphics.lineStyle(2.0, color, 1.0, true, "normal", null, JointStyle.ROUND, 3)
+			this.graphics.lineStyle(3.0, color, 1.0, true, "normal", null, JointStyle.ROUND, 3)
 			this.graphics.drawRoundRectComplex( 0, sc.top - sc.bottom + h.height+1, h.width, sc.height, 10, 10, 0, 0);
 			
 			var sl:Number = this.kl_selector*sc.height*kl_selector_stub_size;
@@ -103,6 +101,8 @@ package charts.series.histogram {
 			this.graphics.lineTo(f.x, f.y);
 			
 			this.graphics.endFill();
+			
+			this.move_to_top();
 		}
 		
 		private function point_between(a:Object, b:Object, s: Number):Object{
@@ -121,9 +121,9 @@ package charts.series.histogram {
 			this.graphics.lineStyle(1.0, Global.getInstance().kl_color_scheme["border-grey"], 1.0, false, "normal", null, JointStyle.ROUND, 3);// : this.graphics.lineStyle(1.0, this.colour, 0, false, "normal", null, JointStyle.ROUND, 3)
 		}
 		
-		private function draw_label():void{
+		private function draw_label(h:Object):void{
 			this.label.visible = true;
-			this.resize_label();
+			this.resize_label(h);
 		}
 		
 		private function add_label():void {
@@ -133,14 +133,104 @@ package charts.series.histogram {
 			
 			label.visible = false
 			
+			var fmt:TextFormat = new TextFormat();
+			fmt.color = 0xFFFFFF
+			fmt.font = "Verdana";
+			fmt.align = "left";
+			fmt.size = 10;
+			label.setTextFormat(fmt);
+			label.autoSize = "center";
+			
 			this.addChild(label);
 		}
 		
-		private function resize_label():void{
+		private function resize_label(h:Object):void{
 			var sc:ScreenCoordsBase = this.cached_sc;
 			var h:Object = this.resize_helper( sc as ScreenCoords );
 			label.y = sc.top - sc.bottom + h.height + sc.height + this.kl_selector*sc.height*kl_selector_stub_size*0.5-label.textHeight/2;
+			label.x = h.width/2 - label.textWidth/2 - 1;
 		}
+		
+		//repositions this element above the rest, so that the kl-selector's border is not under other bar elements
+		private function move_to_top():void{
+			var parent:charts.Base = this.parent as charts.Base;
 			
+			parent.move_above_rest(this);
+			parent.move_above_rest(Global.getInstance().selected_element);
+		}
+		
+		
+		//hide the labels covered by this kl-selector
+		private function hide_default_labels():void{
+			var g:Global = Global.getInstance();
+			
+			g.x_labels.show_all();
+			
+			if ( is_hovering() )
+				hide_labels_around_index(this.index);
+			
+			if ( g.selected_element != null ) {
+				hide_labels_around_index( g.selected_element.index );
+			}
+		}
+		
+		
+		//hide the labels on either side of the histogram bar
+		private function hide_labels_around_index(i:Number):void{
+			var g:Global = Global.getInstance();
+			g.x_labels.hide_label(i);
+			g.x_labels.hide_label(i+1);
+		}
+		
+		private function draw_bar(h:Object):void{
+			var sc:ScreenCoordsBase = this.cached_sc;
+			var cs:Object = Global.getInstance().kl_color_scheme;
+			var height:Number;
+			var bar_bottom:Number
+			if( this.bottom == Number.MIN_VALUE )
+				bar_bottom = sc.get_y_bottom(this.right_axis);
+			else
+				bar_bottom = sc.get_y_from_val(this.bottom, this.right_axis);
+			
+			var bar_top:Number = sc.get_y_from_val(this.kl_two_tone_values[this.index], this.right_axis);
+			height = Math.abs( bar_bottom - bar_top );
+    					
+			var top_fill_color:uint = is_selected() ? cs["top-fill-selected"] : cs["top-fill-unselected"];
+			var top_line_color:uint = is_selected() ? cs["top-border-selected"] : cs["top-border-unselected"];
+			var bottom_fill_color:uint = is_selected() ? cs["bottom-fill-selected"] : cs["bottom-fill-unselected"];
+			var bottom_line_color:uint = is_selected() ? cs["bottom-border-selected"] : cs["bottom-border-unselected"];
+			
+			if ( h.height < height ){
+				this.graphics.lineStyle(1, bottom_line_color, 1.0, true, "normal", null, JointStyle.ROUND, 3);
+				
+				this.graphics.moveTo( 0, 0 );
+				this.graphics.beginFill( bottom_fill_color, 1.0 );
+				this.graphics.lineTo( h.width, 0 );
+				this.graphics.lineTo( h.width, h.height );
+				this.graphics.lineTo( 0, h.height );
+				this.graphics.lineTo( 0, 0 );
+				this.graphics.endFill();
+			}else{
+				this.graphics.lineStyle(1, top_line_color, 1.0, true, "normal", null, JointStyle.ROUND, 3)
+				
+				this.graphics.moveTo( 0, 0 );
+				this.graphics.beginFill( top_fill_color, 1.0 );
+				this.graphics.lineTo( h.width, 0 );
+				this.graphics.lineTo( h.width, h.height - height );
+				this.graphics.lineTo( 0, h.height - height );
+				this.graphics.lineTo( 0, 0 );
+				this.graphics.endFill();
+				
+				this.graphics.lineStyle(1, bottom_line_color, 1.0, true, "normal", null, JointStyle.ROUND, 3);
+				
+				this.graphics.moveTo( 0, h.height - height );
+				this.graphics.beginFill( bottom_fill_color, 1.0 );
+				this.graphics.lineTo( h.width, h.height - height );
+				this.graphics.lineTo( h.width, h.height );
+				this.graphics.lineTo( 0, h.height );
+				this.graphics.lineTo( 0, h.height - height );
+				this.graphics.endFill();
+			}
+		}
 	}
 }

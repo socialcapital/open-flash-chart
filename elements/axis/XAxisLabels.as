@@ -1,12 +1,10 @@
 package elements.axis {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.display.DisplayObject;
-	import flash.geom.Rectangle;
-	import elements.axis.AxisLabel;
+	
 	import string.Utils;
-	import com.serialization.json.JSON;
 	// import DateUtils;
 	
 	public class XAxisLabels extends Sprite {
@@ -315,6 +313,20 @@ package elements.axis {
 			labelText = labelText.replace('#val#', NumberUtils.formatNumber(xVal));
 			// labelText = DateUtils.replace_magic_values(labelText, xVal);
 			return labelText;
+		}
+		
+		public function hide_label(index:Number):void{
+			this.getChildAt(index).visible = false;
+		}
+		
+		public function show_label(index:Number):void{
+			this.getChildAt(index).visible = true;
+		}
+		
+		public function show_all():void{
+			for ( var i:Number = 0; i < this.numChildren ; i++ ){
+				this.show_label(i);
+			}
 		}
 
 	}

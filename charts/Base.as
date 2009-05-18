@@ -1,9 +1,11 @@
 package charts {
 
-	import flash.display.Sprite;
 	import charts.series.Element;
-	import flash.geom.Point;
+	
 	import elements.axis.XAxisLabels;
+	
+	import flash.display.Sprite;
+	import flash.geom.Point;
 	
 	public class Base extends Sprite {
 		
@@ -376,6 +378,21 @@ package charts {
 				
 				index++;
 			}
+		}
+		
+		
+		//reposition an element above the others so that it is the top most, and thus drawn ontop of others
+		//only applies to children of this sprite
+		public function move_above_rest(child:Sprite):void{
+			if ( this.contains(child) ) {
+				this.removeChild(child);
+				this.addChild(child);
+			}
+		}
+		
+		//hide the label on given index
+		public function hide_label(index:Number):void{
+			this.axis
 		}
 		
 		/**
