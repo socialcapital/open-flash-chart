@@ -29,7 +29,7 @@ package charts.series.histogram {
 			if ( this.label != null )
 				this.label.visible = false;
 			
-			if ( label == null )
+			if ( label == null && Global.getInstance().kl_selector_labels != null)
 				this.add_label();
 			
 			this.graphics.clear();
@@ -191,8 +191,9 @@ package charts.series.histogram {
 				bar_bottom = sc.get_y_bottom(this.right_axis);
 			else
 				bar_bottom = sc.get_y_from_val(this.bottom, this.right_axis);
-			
+			if ( this.kl_two_tone_values != null ) {
 			var bar_top:Number = sc.get_y_from_val(this.kl_two_tone_values[this.index], this.right_axis);
+			}
 			height = Math.abs( bar_bottom - bar_top );
     					
 			var top_fill_color:uint = is_selected() ? cs["top-fill-selected"] : cs["top-fill-unselected"];
