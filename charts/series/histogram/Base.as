@@ -25,6 +25,7 @@ package charts.series.histogram {
 		protected var kl_selector_stub_size:Number = 0;
 		protected var kl_two_tone_values:Array = null;
 		protected var kl_two_tone_top_color:uint = 0;
+		protected var kl_default_selected:Number = -1;
 		
 		
 		public function Base( index:Number, value:Object, colour:Number, tooltip:String, alpha:Number, group:Number )
@@ -57,6 +58,8 @@ package charts.series.histogram {
 			if( value['on-hover'] )
 				this.set_on_hover( value['on-hover'] );
 			
+			if( value['kl-default-selected'] )
+				this.kl_default_selected = value['kl-default-selected'];
 			if( value['kl-selector-size'] )
 				this.kl_selector = value['kl-selector-size'];
 			if( value['kl-selector-stub-size'] )

@@ -93,6 +93,7 @@
 				'on-click':	this.style['on-click'],
 				'on-hover': this.style['on-hover'],
 				'kl-selector-size': this.style['kl-selector-size'],
+				'kl-default-selected': this.style['kl-default-selected'],
 				'kl-selector-stub-size': this.style['kl-selector-stub-size'],
 				'kl-two-tone-top-color': this.style['kl-two-tone-top-color'],
 				'kl-two-tone-values': this.style['kl-two-tone-values'],

@@ -18,13 +18,18 @@ package charts.series.histogram {
 		
 		public function Bar( index:Number, style:Object, group:Number ) {
 			super(index, style, style.colour, style.tip, style.alpha, group);
-			Global.getInstance().selected_element = this;
+			trace(this.kl_default_selected);
+			if ( this.kl_default_selected == index || this.kl_default_selected == -1){
+				Global.getInstance().selected_element = this;
+			}
 		}
 		
 		private function do_resize( sc:ScreenCoordsBase ):void {
 			var h:Object = this.resize_helper( sc as ScreenCoords );
 			
-			this.hide_default_labels();
+			if ( this.kl_selector != 0 ){
+				this.hide_default_labels();
+			}
 			
 			if ( this.label != null )
 				this.label.visible = false;
@@ -34,7 +39,7 @@ package charts.series.histogram {
 			
 			this.graphics.clear();
 			
-			if (this.is_hovering()){
+			if (this.is_hovering() && this.show_selector()){
 				this.set_line(false);
 			}else{
 				this.set_line(true);
@@ -42,9 +47,9 @@ package charts.series.histogram {
 			
 			this.draw_bar(h);
 			
-			if (this.is_selected()){
+			if (this.is_selected() && this.show_selector()){
 				this.draw_selector(h, sc, Global.getInstance().kl_color_scheme["grey-selector"]);
-			}else if (this.is_hovering()){
+			}else if (this.is_hovering() && this.show_selector()){
 				this.draw_selector(h, sc, Global.getInstance().kl_color_scheme["blue-selector"]);
 			}
 		}
@@ -109,12 +114,16 @@ package charts.series.histogram {
 			return {x: a.x+(b.x-a.x)*s, y: a.y+(b.y-a.y)*s};
 		}
 		
+		private function show_selector():Boolean{
+			return this.kl_selector > 0;
+		}
+		
 		private function is_hovering():Boolean{
-			return this.kl_selector > 0 && this.is_hovered;
+			return this.is_hovered != null && this.is_hovered;
 		}
 		
 		private function is_selected():Boolean{
-			return this.kl_selector > 0 && this == Global.getInstance().selected_element;;
+			return Global.getInstance().selected_element != null && this == Global.getInstance().selected_element;
 		}
 		
 		private function set_line(visible:Boolean):void{
@@ -166,7 +175,7 @@ package charts.series.histogram {
 			
 			g.x_labels.show_all();
 			
-			if ( is_hovering() )
+			if ( is_hovering() && this.show_selector())
 				hide_labels_around_index(this.index);
 			
 			if ( g.selected_element != null ) {
