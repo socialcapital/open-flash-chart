@@ -18,13 +18,14 @@ package charts.series.histogram {
 		
 		public function Bar( index:Number, style:Object, group:Number ) {
 			super(index, style, style.colour, style.tip, style.alpha, group);
-			trace(this.kl_default_selected);
 			if ( this.kl_default_selected == index || this.kl_default_selected == -1){
 				Global.getInstance().selected_element = this;
 			}
 		}
 		
 		private function do_resize( sc:ScreenCoordsBase ):void {
+			
+			this.graphics.clear();
 			var h:Object = this.resize_helper( sc as ScreenCoords );
 			
 			if ( this.kl_selector != 0 ){
@@ -36,8 +37,6 @@ package charts.series.histogram {
 			
 			if ( label == null && Global.getInstance().kl_selector_labels != null)
 				this.add_label();
-			
-			this.graphics.clear();
 			
 			if (this.is_hovering() && this.show_selector()){
 				this.set_line(false);
@@ -165,7 +164,6 @@ package charts.series.histogram {
 			var parent:charts.Base = this.parent as charts.Base;
 			
 			parent.move_above_rest(this);
-			parent.move_above_rest(Global.getInstance().selected_element);
 		}
 		
 		

@@ -1,10 +1,11 @@
-
 package  {
 	import charts.Factory;
+	import charts.Line;
 	import charts.ObjectCollection;
 	import charts.series.has_tooltip;
 	
 	import com.adobe.images.PNGEncoder;
+	import com.dynamicflash.util.Base64;
 	import com.serialization.json.JSON;
 	
 	import elements.Background;
@@ -43,8 +44,6 @@ package  {
 	import flash.utils.ByteArray;
 	
 	import global.Global;
-	
-	import mx.utils.Base64Encoder;
 	
 	import string.Utils;
 	
@@ -86,7 +85,9 @@ package  {
 
 			this.build_right_click_menu();
 			this.ok = false;
-
+			
+			
+			
 			if( !this.find_data() )
 			{
 				// no data found -- debug mode?
@@ -125,6 +126,8 @@ package  {
 			// more interface
 			ExternalInterface.addCallback("get_version",	getVersion);
 			
+			ExternalInterface.addCallback("set_green_line", setGreenLine);
+			
 			// tell the web page that we are ready
 			if( this.chart_parameters['id'] )
 				ExternalInterface.call("ofc_ready", this.chart_parameters['id']);
@@ -144,7 +147,7 @@ package  {
 			var bmp:BitmapData = new BitmapData(this.stage.stageWidth, this.stage.stageHeight);
 			bmp.draw(this);
 			
-			var b64:Base64Encoder = new Base64Encoder();
+			var b64:String;
 			
 			var b:ByteArray = PNGEncoder.encode(bmp);
 			
@@ -155,8 +158,8 @@ package  {
 			//
 			//
 			//
-			b64.encodeBytes(b);
-			return b64.toString();
+			b64 = Base64.encodeByteArray(b);
+			return Base64.decode(b64);
 			//
 			// commented out by J vander? why?
 			// return b64.flush();
@@ -311,7 +314,7 @@ package  {
 			{
 				// tr.ace( 'Found parameter:' + parameters['data-file'] );
 				this.load_external_file( this.chart_parameters['data-file'] );
-				//
+				//resize
 				// LOOK:
 				//
 				return true;
@@ -632,6 +635,7 @@ package  {
 		private function xmlLoaded(event:Event):void {
 			var loader:URLLoader = URLLoader(event.target);
 			this.parse_json( loader.data );
+			this.resize();
 		}
 		
 		//
@@ -921,6 +925,12 @@ package  {
 		
 		private function get_space_below_graph( sc:ScreenCoordsBase ):Number{
 			return this.space_below_graph * sc.height;
+		}
+		
+		private function setGreenLine(values:Array):void{
+			var g:Global = Global.getInstance();
+			var line:Line = this.obs.sets[1];
+			line.resize_with_values(values);
 		}
 
 

@@ -6,6 +6,7 @@ package charts {
 	
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import global.Global;
 	
 	public class Base extends Sprite {
 		
@@ -384,9 +385,10 @@ package charts {
 		//reposition an element above the others so that it is the top most, and thus drawn ontop of others
 		//only applies to children of this sprite
 		public function move_above_rest(child:Sprite):void{
-			if ( this.contains(child) ) {
-				this.removeChild(child);
-				this.addChild(child);
+			var selected:Sprite = Global.getInstance().selected_element;
+			if (this.contains(child) && this.contains(selected) && child != null && selected != null) {
+				this.setChildIndex(child, this.numChildren-1);
+				this.setChildIndex(selected, this.numChildren-1);
 			}
 		}
 		

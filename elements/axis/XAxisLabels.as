@@ -19,7 +19,7 @@ package elements.axis {
 		// Ugh, ugly code so we can rotate the text:
 		//
 		// [Embed(systemFont='Arial', fontName='spArial', mimeType='application/x-font', unicodeRange='U+0020-U+007E')]
-		[Embed(systemFont = 'Arial', fontName = 'spArial', mimeType = 'application/x-font')]
+		//[Embed(systemFont = 'Arial', fontName = 'spArial', mimeType = 'application/x-font')]
 		
 		public static var ArialFont__:Class;
 

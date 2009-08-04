@@ -26,7 +26,7 @@
 //		[Embed(systemFont='Arial', fontName='spArial', mimeType='application/x-font')]
 //		public static var ArialFont:Class;
 		
-		[Embed(systemFont='Arial', fontName='spArial', mimeType='application/x-font')]
+		//[Embed(systemFont='Arial', fontName='spArial', mimeType='application/x-font')]
 		public static var ArialFont:Class;
 		
 		public function YLegendBase( json:Object, name:String )

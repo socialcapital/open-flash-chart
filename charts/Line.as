@@ -1,20 +1,20 @@
 package charts {
 
-	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import charts.series.Element;
-	import string.Utils;
+	import charts.series.dots.DefaultDotProperties;
+	import charts.series.dots.dot_factory;
+	
 	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	
-	import charts.series.dots.DefaultDotProperties;
-	import charts.series.dots.dot_factory;
+	import string.Utils;
 	
 	public class Line extends Base
 	{
 		// JSON style:
 		protected var style:Object;
 		private var props:Properties;
+		private var cached_sc:ScreenCoordsBase;
 		
 		public function Line( json:Object ) {
 		
@@ -72,9 +72,28 @@ package charts {
 			return dot_factory.make( index, tmp );
 		}
 		
+		public function resize_with_values(values:Array):void{
+			this.values = values;
+			var j:Number = 0;
+			for (var i=0; i < this.numChildren; i++ ) {
+
+				var tmp:Sprite = this.getChildAt(i) as Sprite;
+				
+				//
+				// filter out the line masks
+				//
+				if( tmp is Element )
+				{
+					var e:Element = tmp as Element;
+					e._y = values[j++];
+				}
+			}
+			this.resize(this.cached_sc);
+		}
 		
 		// Draw lines...
 		public override function resize( sc:ScreenCoordsBase ): void {
+			this.cached_sc = sc;
 			this.x = this.y = 0;
 
 			this.graphics.clear();
