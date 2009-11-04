@@ -35,6 +35,9 @@ package charts {
 			// hack: keep this incase the merge kills it, we'll
 			// remove the merge later (and this hack)
 			var tmp:Object = json['dot-style'];
+			if ( tmp == null )
+				tmp = new Object;
+			tmp['tip'] = json['tip'];
 			
 			object_helper.merge_2( json, this.style );
 			

@@ -28,9 +28,9 @@ package charts.series.histogram {
 			this.graphics.clear();
 			var h:Object = this.resize_helper( sc as ScreenCoords );
 			
-			if ( this.kl_selector != 0 ){
-				this.hide_default_labels();
-			}
+			//if ( this.kl_selector != 0 ){
+			//	this.hide_default_labels();
+			//}
 			
 			if ( this.label != null )
 				this.label.visible = false;
@@ -207,7 +207,17 @@ package charts.series.histogram {
 			var top_line_color:uint = is_selected() ? cs["top-border-selected"] : cs["top-border-unselected"];
 			var bottom_fill_color:uint = is_selected() ? cs["bottom-fill-selected"] : cs["bottom-fill-unselected"];
 			var bottom_line_color:uint = is_selected() ? cs["bottom-border-selected"] : cs["bottom-border-unselected"];
+			var background_color:uint = cs["bg-colour"];
 			
+			this.graphics.lineStyle(1, background_color, 1.0, true, "normal", null, JointStyle.ROUND, 3);
+			this.graphics.moveTo( 1, sc.top - sc.bottom + h.height );
+			this.graphics.beginFill( background_color, 1.0 );
+			this.graphics.lineTo( h.width-1, sc.top - sc.bottom + h.height );
+			this.graphics.lineTo( h.width-1, sc.top - sc.bottom + h.height + sc.height );
+			this.graphics.lineTo( 1, sc.top - sc.bottom + h.height + sc.height );
+			this.graphics.lineTo( 1, sc.top - sc.bottom + h.height );
+			this.graphics.endFill();
+				
 			if ( h.height < height ){
 				this.graphics.lineStyle(1, bottom_line_color, 1.0, true, "normal", null, JointStyle.ROUND, 3);
 				

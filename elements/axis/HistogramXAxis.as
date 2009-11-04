@@ -9,7 +9,7 @@ package elements.axis {
 		
 		public function HistogramXAxis( json:Object, min:Number, max:Number){
 			super(json, min, max);
-			this.offset = false;
+			this.offset = true;
 		}
 		
 	}

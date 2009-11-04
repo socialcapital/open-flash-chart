@@ -15,7 +15,7 @@
 				'dot-size': 	5,
 				'halo-size':	2,
 				'colour':		colour,
-				'tip':			'#val#',
+				'tip':			json['tip'],
 				alpha:			1,
 				// this is for anchors:
 				rotation:		0,

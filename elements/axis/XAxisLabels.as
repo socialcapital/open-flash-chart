@@ -22,6 +22,7 @@ package elements.axis {
 		//[Embed(systemFont = 'Arial', fontName = 'spArial', mimeType = 'application/x-font')]
 		
 		public static var ArialFont__:Class;
+		private var offset:Boolean = false;
 
 		function XAxisLabels( json:Object ) {
 			
@@ -43,6 +44,10 @@ package elements.axis {
 			
 			// cache the text for tooltips
 			this.axis_labels = new Array();
+			
+			if ( (json.x_axis != null) && (json.x_axis['offset'] is Boolean) ) {
+				this.offset = json.x_axis['offset'];
+			}
 			
 			if( ( json.x_axis != null ) && ( json.x_axis.labels != null ) )
 				object_helper.merge_2( json.x_axis.labels, this.style );
@@ -143,7 +148,8 @@ package elements.axis {
 				size:		style.size,
 				align:		style.align,
 				visible:	style.visible,
-				x:			style.x
+				x:			style.x,
+				offset: 	style.offset
 			};
 
 			//
@@ -192,6 +198,7 @@ package elements.axis {
 			var title:AxisLabel = new AxisLabel();
             title.x = 0;
 			title.y = 0;
+			title.offset = label_style.offset;
 			
 			//this.css.parseCSS(this.style);
 			//title.styleSheet = this.css;
@@ -264,6 +271,9 @@ package elements.axis {
 				else
 				{
 					child.x = sc.get_x_from_val(child.xVal) + child.xAdj;
+				}
+				if ( child.offset ) {
+					child.x += sc.get_x_from_val_offset(pos);
 				}
 				child.y = yPos + child.yAdj;
 			}

@@ -90,10 +90,9 @@ package {
 			var x:Number = 5;
 			
 			for each ( var e:has_tooltip in elements ) {
-				
-				var o:Object = this.make_one_tip(e, x);
-				height = Math.max(height, o.height);
-				x += o.width + 2;
+					var o:Object = this.make_one_tip(e, x);
+					height = Math.max(height, o.height);
+					x += o.width + 2;
 			}
 			
 			this.graphics.lineStyle(this.style.stroke, this.style.colour, 1);
@@ -263,7 +262,7 @@ package {
 		
 		public function closest( elements:Array ):void {
 
-			if( elements.length == 0 )
+			if( elements.length == 0)
 				return;
 			
 			if( this.is_cached( elements ) )

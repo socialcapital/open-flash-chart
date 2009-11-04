@@ -37,7 +37,7 @@
 		
 		public function Element()
 		{
-			this.right_axis = false;	
+			this.right_axis = false;
 		}
 		
 		public function resize( sc:ScreenCoordsBase ):void {

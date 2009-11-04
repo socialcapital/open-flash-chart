@@ -4,7 +4,7 @@ package {
 	
 	public class ScreenCoords extends ScreenCoordsBase
 	{
-		private var x_range:Range;
+		public var x_range:Range;
 		private var y_range:Range;
 		private var y_right_range:Range;
 		
@@ -14,7 +14,7 @@ package {
 		
 		// tick_offset is set by 3D axis
 		public var tick_offset:Number;
-		private var x_offset:Boolean;
+		public var x_offset:Boolean;
 		private var y_offset:Boolean;
 		private var bar_groups:Number;
 	
@@ -274,6 +274,18 @@ package {
 				tmp = Math.abs(item_width/2);
 				
 			return this.left_()+tmp+(pos*item_width);
+		}
+		
+		public function get_x_from_val_offset( i:Number ):Number {
+			// Patch from DZ:
+			var rev:Boolean = this.x_range.min > this.x_range.max;
+			var count:Number = this.x_range.count();
+			count += (rev && this.x_range.offset) ? -2 : 0;
+			var item_width:Number = this.width_() / count;
+			// end DZ
+			
+				
+			return Math.abs(item_width/2);
 		}
 		
 		//

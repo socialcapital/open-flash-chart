@@ -83,7 +83,7 @@ package  {
 			var l:Loading = new Loading(this.chart_parameters['loading']);
 			this.addChild( l );
 
-			this.build_right_click_menu();
+			//this.build_right_click_menu();
 			this.ok = false;
 			
 			
@@ -465,7 +465,14 @@ package  {
 		private function mouse_move_closest( event:Event ):void {
 			
 			var elements:Array = this.obs.closest_2( this.mouseX, this.mouseY );
-			this.tooltip.closest( elements );
+			var selected_elements:Array = new Array();
+			for each( var e:has_tooltip in elements ) {
+				if ( e.get_tooltip() != "" ) {
+					selected_elements.push(e);
+				}
+			}
+			
+			this.tooltip.closest( selected_elements );
 		}
 		
 		private function activateHandler(event:Event):void {
@@ -745,6 +752,7 @@ package  {
 					trace(color);
 					this.kl_color_scheme[color] = string.Utils.get_colour( json['kl-color-scheme'][color] );
 				}
+				this.kl_color_scheme['bg-colour'] = string.Utils.get_colour( json['bg_colour'] );
 			}
 			
 			Global.getInstance().kl_color_scheme = this.kl_color_scheme;
@@ -810,7 +818,7 @@ package  {
 			this.x_legend		= new XLegend( json.x_legend );			
 			this.y_legend		= new YLegendLeft( json );
 			this.y_legend_2		= new YLegendRight( json );
-			this.x_axis			= new HistogramXAxis( json, this.obs.get_min_x(), this.obs.get_max_x() );
+			this.x_axis			= new XAxis( json, this.obs.get_min_x(), this.obs.get_max_x() );
 			this.y_axis			= new YAxisLeft( json );
 			this.y_axis_right	= new YAxisRight( json );
 			
@@ -821,7 +829,7 @@ package  {
 			g.x_legend = this.x_legend;
 			
 			// make the kl-labels available to elements via Global
-			g.kl_selector_labels = json.x_axis["kl-selector-labels"];
+			g.kl_selector_labels = json.x_axis.labels.labels;
 
 			//  can pick up X Axis labels for the
 			// tooltips

@@ -13,6 +13,7 @@ package elements.axis {
 		public var rightOverhang:Number = 0;
 		public var xVal:Number = NaN;
 		public var yVal:Number = NaN;
+		public var offset:Boolean = false;
 		
 		public function AxisLabel()	{}
 		
@@ -31,7 +32,7 @@ package elements.axis {
 			var mytop:Number = this.height * Math.sin((90 - rotation) * Math.PI / 180);
 			var mybottom:Number = this.width * Math.sin(rotation * Math.PI / 180);
 			
-			if (((rotation % 90) == 0) || (align == "center"))
+			if ((((rotation % 90) == 0) || (align == "center")))
 			{
 				this.xAdj = (myleft - myright) / 2;
 			}

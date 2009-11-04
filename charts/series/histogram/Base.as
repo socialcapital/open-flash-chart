@@ -64,7 +64,6 @@ package charts.series.histogram {
 				this.kl_selector = value['kl-selector-size'];
 			if( value['kl-selector-stub-size'] )
 				this.kl_selector_stub_size = value['kl-selector-stub-size'];
-				
 			if( value['kl-two-tone-values'] ){
 				this.kl_two_tone_values = value['kl-two-tone-values'];
 				
