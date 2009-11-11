@@ -32,6 +32,7 @@ package charts.series.histogram {
 		{
 			super();
 			this.index = index;
+			this._x = index;
 			this.parse_value(value);
 			this.colour = colour;
 			this.tooltip = this.replace_magic_values( tooltip );

@@ -80,7 +80,7 @@ package charts.series.histogram {
 			this.draw_label(h);
 			
 			this.graphics.lineStyle(3.0, color, 1.0, true, "normal", null, JointStyle.ROUND, 3)
-			this.graphics.drawRoundRectComplex( 0, sc.top - sc.bottom + h.height+1, h.width, sc.height, 10, 10, 0, 0);
+			this.graphics.drawRoundRectComplex( 0, sc.top - sc.bottom + h.height+1, h.width, sc.height, 2, 2, 0, 0);
 			
 			var sl:Number = this.kl_selector*sc.height*kl_selector_stub_size;
 			
@@ -143,9 +143,9 @@ package charts.series.histogram {
 			
 			var fmt:TextFormat = new TextFormat();
 			fmt.color = 0xFFFFFF
-			fmt.font = "Verdana";
+			fmt.font = "Arial";
 			fmt.align = "left";
-			fmt.size = 10;
+			fmt.size = 12;
 			label.setTextFormat(fmt);
 			label.autoSize = "center";
 			

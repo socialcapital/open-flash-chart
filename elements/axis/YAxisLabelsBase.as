@@ -89,7 +89,7 @@
 			tf.text = this.replace_magic_values(lblStyle.val, lblStyle.pos);
 			var fmt:TextFormat = new TextFormat();
 			fmt.color = lblStyle.colour;
-			fmt.font = lblStyle.rotate == "vertical" ? "spArial" : "Verdana";
+			fmt.font = lblStyle.rotate == "vertical" ? "spArial" : "Arial";
 			fmt.size = lblStyle.size;
 			fmt.align = "right";
 			tf.setTextFormat(fmt);

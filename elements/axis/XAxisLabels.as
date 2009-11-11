@@ -216,7 +216,7 @@ package elements.axis {
 			}
 			else
 			{
-				fmt.font = "Verdana";
+				fmt.font = "Arial";
 			}
 
 			fmt.size = label_style.size;

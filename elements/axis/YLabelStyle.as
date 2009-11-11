@@ -8,7 +8,7 @@ package elements.axis {
 		public function YLabelStyle( json:Object, name:String )
 		{
 
-			this.style = {	size: 10,
+			this.style = {	size: 12,
 							colour: 0x000000,
 							show_labels: true
 						 };

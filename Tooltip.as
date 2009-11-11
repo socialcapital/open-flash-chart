@@ -100,7 +100,7 @@ package {
 		
 			this.graphics.drawRoundRect(
 				0,0,
-				width+10, height + 5,
+				o.width+10, height + 5,
 				this.style.rounded, this.style.rounded );
 		}
 			
@@ -129,6 +129,7 @@ package {
 			text.x = x;
 			text.y = top;
 			width = Math.max( width, text.width );
+			text.width = width
 			this.addChild( text );
 			
 			top += text.height;
@@ -152,12 +153,12 @@ package {
 			 */
 			var fmt:TextFormat = new TextFormat();
 			fmt.color = this.style.title.color;
-			fmt.font = "Verdana";
+			fmt.font = "Arial";
 			fmt.bold = (this.style.title.font_weight=="bold");
 			fmt.size = this.style.title.font_size;
-			fmt.align = "right";
+			fmt.align = "center";
 			title.setTextFormat(fmt);
-			title.autoSize = "left";
+			title.autoSize = "center";
 			
 			return title;
 		}			
@@ -170,12 +171,12 @@ package {
 			text.htmlText =  body;
 			var fmt2:TextFormat = new TextFormat();
 			fmt2.color = this.style.body.color;
-			fmt2.font = "Verdana";
+			fmt2.font = "Arial";
 			fmt2.bold = (this.style.body.font_weight=="bold");
 			fmt2.size = this.style.body.font_size;
-			fmt2.align = "left";
+			fmt2.align = "center";
 			text.setTextFormat(fmt2);
-			text.autoSize="left";
+			text.autoSize="center";
 			
 			return text;
 		}
