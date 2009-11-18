@@ -203,6 +203,7 @@ package elements.axis {
 			//this.css.parseCSS(this.style);
 			//title.styleSheet = this.css;
 			title.text = label_style.text;
+			title.htmlText = label_style.text;
 			
 			var fmt:TextFormat = new TextFormat();
 			fmt.color = label_style.colour;
@@ -220,9 +221,9 @@ package elements.axis {
 			}
 
 			fmt.size = label_style.size;
-			fmt.align = "left";
+			fmt.align = "center";
 			title.setTextFormat(fmt);
-			title.autoSize = "left";
+			title.autoSize = "center";
 			title.rotate_and_align( label_style.rotate, label_style.align, this );
 			
 			// we don't know the x & y locations yet...

@@ -827,6 +827,8 @@ package  {
 			// this is needed by all the elements tooltip
 			g.x_labels = this.x_axis.labels;
 			g.x_legend = this.x_legend;
+			g.json = json;
+			g.x_axis = this.x_axis;
 			
 			// make the kl-labels available to elements via Global
 			g.kl_selector_labels = json.x_axis.labels.labels;

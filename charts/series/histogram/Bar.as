@@ -5,6 +5,7 @@ package charts.series.histogram {
 	
 	import flash.display.JointStyle;
 	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.text.TextFormat;
 	
 	import global.Global;
@@ -15,12 +16,14 @@ package charts.series.histogram {
 		protected var screen_coords:ScreenCoordsBase = null;
 		
 		protected var label:AxisLabel;
+		protected var style:Object;
 		
 		public function Bar( index:Number, style:Object, group:Number ) {
 			super(index, style, style.colour, style.tip, style.alpha, group);
 			if ( this.kl_default_selected == index || this.kl_default_selected == -1){
 				Global.getInstance().selected_element = this;
 			}
+			this.style = style;
 		}
 		
 		private function do_resize( sc:ScreenCoordsBase ):void {
@@ -137,26 +140,33 @@ package charts.series.histogram {
 		private function add_label():void {
 			label = new AxisLabel();
 			var g:Global = Global.getInstance();
-			label.text = g.kl_selector_labels[index];
+			
+			this.style = g.json.x_axis.labels
+			
+			style.text = g.kl_selector_labels[index];
+			
+			label = new AxisLabel();
+			var g:Global = Global.getInstance();
+			
+			var clone:AxisLabel = g.x_axis.labels.getChildAt(index) as AxisLabel;
+			var fmt:TextFormat = clone.getTextFormat();
+			label.autoSize = clone.autoSize;
+			
+			label.htmlText = clone.htmlText;
+			label.text = clone.text;
+			fmt.color = style.colour;
+			label.setTextFormat(fmt);
 			
 			label.visible = false
-			
-			var fmt:TextFormat = new TextFormat();
-			fmt.color = 0xFFFFFF
-			fmt.font = "Arial";
-			fmt.align = "left";
-			fmt.size = 12;
-			label.setTextFormat(fmt);
-			label.autoSize = "center";
-			
 			this.addChild(label);
 		}
 		
 		private function resize_label(h:Object):void{
-			var sc:ScreenCoordsBase = this.cached_sc;
-			var h:Object = this.resize_helper( sc as ScreenCoords );
-			label.y = sc.top - sc.bottom + h.height + sc.height + this.kl_selector*sc.height*kl_selector_stub_size*0.5-label.textHeight/2;
-			label.x = h.width/2 - label.textWidth/2 - 1;
+			var g:Global = Global.getInstance();
+			var clone:AxisLabel = g.x_axis.labels.getChildAt(index) as AxisLabel;
+			var position:Point = label.parent.globalToLocal(clone.parent.localToGlobal(new Point(clone.x,clone.y)));
+			label.x = position.x;
+			label.y = position.y;
 		}
 		
 		//repositions this element above the rest, so that the kl-selector's border is not under other bar elements

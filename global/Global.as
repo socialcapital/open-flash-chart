@@ -4,6 +4,7 @@ package global {
 	
 	import elements.axis.XAxisLabels;
 	import elements.labels.XLegend;
+	import elements.axis.XAxis;
 	
 	public class Global {
 		private static var instance:Global = null;
@@ -11,6 +12,8 @@ package global {
 		
 		public var x_labels:XAxisLabels;
 		public var x_legend:XLegend;
+		public var json:Object;
+		public var x_axis:XAxis;
 		private var tooltip:String;
 		
 		public var kl_color_scheme:Object;
