@@ -7,6 +7,7 @@ package charts.series.histogram {
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.text.TextFormat;
+	import string.Utils;
 	
 	import global.Global;
 	
@@ -154,7 +155,7 @@ package charts.series.histogram {
 			
 			label.htmlText = clone.htmlText;
 			label.text = clone.text;
-			fmt.color = style.colour;
+			fmt.color = Utils.get_colour(style.colour);
 			label.setTextFormat(fmt);
 			
 			label.visible = false
