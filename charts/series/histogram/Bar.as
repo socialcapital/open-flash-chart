@@ -155,7 +155,7 @@ package charts.series.histogram {
 			
 			label.htmlText = clone.htmlText;
 			label.text = clone.text;
-			fmt.color = Utils.get_colour(style.colour);
+			fmt.color = Utils.get_colour(style["colour-selected"]);
 			label.setTextFormat(fmt);
 			
 			label.visible = false
