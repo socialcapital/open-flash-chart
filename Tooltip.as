@@ -1,6 +1,6 @@
 package {
 
-    import caurina.transitions.Tweener;
+	import caurina.transitions.Tweener;
 	import caurina.transitions.Equations;
 	import flash.display.Sprite;
 	import flash.geom.Point;
@@ -41,7 +41,6 @@ package {
 			//
 			this.mouseEnabled = false;
 			this.tip_showing = false;
-			
 			this.style = {
 				shadow:		true,
 				rounded:	6,
@@ -94,7 +93,6 @@ package {
 			var x:Number = 5;
 			
 			for each ( var e:has_tooltip in elements ) {
-			
 				var o:Object = this.make_one_tip(e, x);
 				height = Math.max(height, o.height);
 				x += o.width + 2;
@@ -176,7 +174,6 @@ package {
 			width = Math.max( width, text.width, tt_image_width );
 			//if (width > 250) { width = 250; }
 			this.addChild( text );
-			
 			top += text.height;
 			return {width:width, height:top};
 		}
@@ -390,7 +387,7 @@ package {
 		
 		public function hide():void {
 			this.tip_showing = false;
-			tr.ace('hide tooltip');
+			//tr.ace('hide tooltip');
 			Tweener.addTween(this, { alpha:0, time:0.6, transition:Equations.easeOutExpo, onComplete:hideAway } );
 		}
 		
