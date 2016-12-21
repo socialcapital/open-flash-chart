@@ -1,19 +1,20 @@
-﻿package charts.series {
+package charts.series {
 	
-	import caurina.transitions.Equations;
-	import caurina.transitions.Tweener;
-	
-	import elements.axis.XAxisLabels;
-	
+	import charts.series.has_tooltip;
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import string.Utils;
+	import global.Global;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.external.ExternalInterface;
+	import caurina.transitions.Tweener;
+	import caurina.transitions.Equations;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	
-	import global.Global;
+	import flash.external.ExternalInterface;
+	import elements.axis.XAxisLabels;
+	import flash.display.Loader;
 	
 	public class Element extends Sprite implements has_tooltip {
 		//
@@ -25,23 +26,30 @@
 		public var index:Number;
 		protected var tooltip:String;
 		private var link:String;
-		private var hover_link:String = null;
 		public var is_tip:Boolean;
 		
 		public var line_mask:Sprite;
 		protected var right_axis:Boolean;
 		
-		protected var selected:Boolean = false;
-		protected var cached_sc:ScreenCoordsBase;
-		
+		private var has_tooltip_image:Boolean;
+		private var tt_updated_text:String;
+		private var tt_image_width:Number;
+		private var tt_image_height:Number;
+		private var tt_image_name:String;
+		private var myLoader:Loader;
+		private var tt_image:Bitmap;
+		private var max_image_size:Number = 200;
 		
 		public function Element()
 		{
-			this.right_axis = false;
+			// elements don't change shape much, so lets
+			// cache it
+			this.cacheAsBitmap = true;
+			this.right_axis = false;	
 		}
 		
 		public function resize( sc:ScreenCoordsBase ):void {
-			this.cached_sc = sc;
+			
 			var p:flash.geom.Point = sc.get_get_x_from_pos_and_y_from_val( this._x, this._y, this.right_axis );
 			this.x = p.x;
 			this.y = p.y;
@@ -108,23 +116,7 @@
 			this.addEventListener(MouseEvent.MOUSE_UP, this.mouseUp, false, 0, true);
 		}
 		
-		public function set_on_hover( s:String ):void {
-			this.hover_link = s;
-			this.buttonMode = true;
-			this.useHandCursor = true;
-			
-			this.addEventListener(MouseEvent.MOUSE_OVER, this.mouseHover, false, 0, true);
-		}
-		
-		public function mouseHover(event:Event){
-			ExternalInterface.call( this.hover_link, this.index );
-		}
-		
 		private function mouseUp(event:Event):void {
-			var ele:Element = Global.getInstance().selected_element;
-			Global.getInstance().selected_element = this;
-			if ( ele != null )
-				ele.resize(this.cached_sc);
 			
 			if ( this.link.substring(0, 6) == 'trace:' ) {
 				// for the test JSON files:
@@ -134,9 +126,14 @@
 				this.browse_url( this.link );
 			else if ( this.link.substring(0, 6) == 'https:' )
 				this.browse_url( this.link );
-			else
+			else {
+				//
+				// TODO: fix the on click to pass out the chart id:
+				//
+				// var ex:ExternalInterfaceManager = ExternalInterfaceManager.getInstance();
+				// ex.callJavascript(this.link, this.index);
 				ExternalInterface.call( this.link, this.index );
-			this.resize(this.cached_sc);
+			}
 		}
 			
 		private function browse_url( url:String ):void {
@@ -171,8 +168,48 @@
 		 */
 		public function tooltip_replace_labels( labels:XAxisLabels ):void {
 			
-			tr.aces('x label', this._x, labels.get( this._x ));
 			this.tooltip = this.tooltip.replace('#x_label#', labels.get( this._x ) );
+			
+			tt_updated_text = this.tooltip;
+			if (tt_updated_text.indexOf("#img:") != -1) { 
+				var pattern:RegExp = /#img:(.*)#/ig; 
+				var fooBar1:Array = pattern.exec(tt_updated_text);
+				tt_image_name = fooBar1[1];
+				loadImage(tt_image_name);
+			}
+			
+		}
+	
+		private function loadImage(imageURL:String):void {
+			myLoader = new Loader();
+			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageHandler, false, 0, true);
+			myLoader.load(new URLRequest(imageURL));
+		}
+
+		private function imageHandler(evt:Event):void {
+			tt_image = Bitmap(myLoader.content);
+			imageResize(tt_image.height, tt_image.width);
+			tt_updated_text = tt_updated_text.replace(/#img:(.*)#/ig, "");
+			tt_updated_text = tt_updated_text + "<img src='" + tt_image_name + "' height='" + tt_image_height + "' width='" + tt_image_width + "' alt='' />";
+			this.tooltip = tt_updated_text;
+		}
+		
+		private function imageResize(height:Number, width:Number):void {
+			var variable:Number;
+			if (height > max_image_size || width > max_image_size) {
+				if (height > width) {
+					variable = (max_image_size / height);
+					tt_image_height = int(variable * height);
+					tt_image_width = int(variable * width);
+				} else {
+					variable = (max_image_size / width);
+					tt_image_height = int(variable * height);
+					tt_image_width = int(variable * width);
+				}
+			} else {
+				tt_image_height = height;
+				tt_image_width = width;
+			}
 		}
 		
 		/**

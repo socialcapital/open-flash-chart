@@ -25,6 +25,10 @@ package {
 		
 		public var tip_text:String;
 		
+		public var has_tooltip_image:Boolean;
+		public var tt_image_width:Number;
+		public var tt_image_height:Number;
+		
 		public static const CLOSEST:Number = 0;
 		public static const PROXIMITY:Number = 1;
 		public static const NORMAL:Number = 2;		// normal tooltip (ugh -- boring!!)
@@ -37,7 +41,6 @@ package {
 			//
 			this.mouseEnabled = false;
 			this.tip_showing = false;
-			
 			this.style = {
 				shadow:		true,
 				rounded:	6,
@@ -90,24 +93,64 @@ package {
 			var x:Number = 5;
 			
 			for each ( var e:has_tooltip in elements ) {
-					var o:Object = this.make_one_tip(e, x);
-					height = Math.max(height, o.height);
-					x += o.width + 2;
+				var o:Object = this.make_one_tip(e, x);
+				height = Math.max(height, o.height);
+				x += o.width + 2;
 			}
 			
 			this.graphics.lineStyle(this.style.stroke, this.style.colour, 1);
 			this.graphics.beginFill(this.style.background, 1);
-		
-			this.graphics.drawRoundRect(
+			
+			if (has_tooltip_image) {
+				var largerScalesWidth:Number = Math.max((width+10),(tt_image_width + 20));
+				var largerScalesHeight:Number = Math.max((height+5),(tt_image_height + 40));
+				this.graphics.drawRoundRect(
 				0,0,
-				o.width+10, height + 5,
+				largerScalesWidth, largerScalesHeight,
 				this.style.rounded, this.style.rounded );
+			} else {
+				this.graphics.drawRoundRect(
+				0,0,
+				width+10, height + 5,
+				this.style.rounded, this.style.rounded );
+			}
+
 		}
 			
 		private function make_one_tip( e:has_tooltip, x:Number ):Object {
 			
+			has_tooltip_image = false;
+			
 			var tt:String = e.get_tooltip();
-			var lines:Array = tt.split( '<br>' );
+			var ttw:String = e.get_tooltip();
+			var tth:String = e.get_tooltip();
+			// move this above to set the height and width
+			if (tt.indexOf("<img") != -1) { 
+				has_tooltip_image = true;
+				if (tt.indexOf(" width=") != -1) {
+					var fooBar:Array = ttw.match(/width='(\d+)'/g);
+					tt_image_width = parseInt(fooBar[0].match(/(\d+)/g));
+				} else {
+					tt_image_width = 0;
+					tr.ace("no width");
+					has_tooltip_image = false;
+				}
+				if (tt.indexOf(" height=") != -1) {
+					var fooBar2:Array = tth.match(/height='(\d+)'/g);
+					tt_image_height = parseInt(fooBar2[0].match(/(\d+)/g));
+				} else {
+					tt_image_height = 0;
+					tr.ace("no height");
+					has_tooltip_image = false;
+				}
+			}
+			if (has_tooltip_image == false) {
+				tt = tt.replace(/(<img[^>]+>)/i, "");
+				tt_image_width = 0;
+				tt_image_height = 0;
+			}
+			
+			var lines:Array = tt.split( '<br />' );
 			
 			var top:Number = 5;
 			var width:Number = 0;
@@ -119,8 +162,8 @@ package {
 				title.x = x;
 				title.y = top;
 				top += title.height;
-				width = title.width;
-				
+				width = Math.max( width, title.width, tt_image_width );
+				//if (width > 250) { width = 250; }
 				this.addChild( title );
 			}
 			
@@ -128,10 +171,9 @@ package {
 			text.mouseEnabled = false;
 			text.x = x;
 			text.y = top;
-			width = Math.max( width, text.width );
-			text.width = width
+			width = Math.max( width, text.width, tt_image_width );
+			//if (width > 250) { width = 250; }
 			this.addChild( text );
-			
 			top += text.height;
 			return {width:width, height:top};
 		}
@@ -153,12 +195,22 @@ package {
 			 */
 			var fmt:TextFormat = new TextFormat();
 			fmt.color = this.style.title.color;
-			fmt.font = "Arial";
+			fmt.font = "Verdana";
 			fmt.bold = (this.style.title.font_weight=="bold");
 			fmt.size = this.style.title.font_size;
 			fmt.align = "center";
 			title.setTextFormat(fmt);
-			title.autoSize = "center";
+			title.multiline = true;
+			title.wordWrap = true;
+			if (has_tooltip_image) {
+				title.width = tt_image_width;
+				title.height = tt_image_height;
+				title.autoSize = "left";
+			} else {
+				title.width = (text.length * 6) + 12;
+				title.height = 10;
+				title.autoSize = "left";
+			}
 			
 			return title;
 		}			
@@ -171,12 +223,23 @@ package {
 			text.htmlText =  body;
 			var fmt2:TextFormat = new TextFormat();
 			fmt2.color = this.style.body.color;
-			fmt2.font = "Arial";
+			fmt2.font = "Verdana";
 			fmt2.bold = (this.style.body.font_weight=="bold");
 			fmt2.size = this.style.body.font_size;
-			fmt2.align = "center";
+			fmt2.align = "left";
 			text.setTextFormat(fmt2);
-			text.autoSize="center";
+			text.multiline = true;
+			text.wordWrap = true;
+			if (has_tooltip_image) {
+				text.width = tt_image_width;
+				text.height = tt_image_height;
+				text.autoSize="left";
+			} else {
+				tr.ace(text.length);
+				text.width = (text.length * 6) + 12;
+				text.height = 10;
+				text.autoSize="left";
+			}
 			
 			return text;
 		}
@@ -263,7 +326,7 @@ package {
 		
 		public function closest( elements:Array ):void {
 
-			if( elements.length == 0)
+			if( elements.length == 0 )
 				return;
 			
 			if( this.is_cached( elements ) )
@@ -324,7 +387,7 @@ package {
 		
 		public function hide():void {
 			this.tip_showing = false;
-			tr.ace('hide tooltip');
+			//tr.ace('hide tooltip');
 			Tweener.addTween(this, { alpha:0, time:0.6, transition:Equations.easeOutExpo, onComplete:hideAway } );
 		}
 		

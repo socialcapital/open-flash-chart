@@ -1,4 +1,4 @@
-﻿package charts.series.pies {
+package charts.series.pies {
 	
 	import charts.series.Element;
 	import charts.Pie;
@@ -13,6 +13,9 @@
 	import flash.events.MouseEvent;
 	import caurina.transitions.Tweener;
 	import caurina.transitions.Equations;
+	import flash.net.URLRequest;
+	import flash.display.Loader;
+	import flash.display.Bitmap;
 	
 	public class PieSlice extends Element {
 		
@@ -31,12 +34,21 @@
 		private var pieRadius:Number;
 		private var rawToolTip:String;
 		
+		private var has_tooltip_image:Boolean;
+		private var tt_updated_text:String;
+		private var tt_image_width:Number;
+		private var tt_image_height:Number;
+		private var tt_image_name:String;
+		private var myLoader:Loader;
+		private var tt_image:Bitmap;
+		private var max_image_size:Number = 200;
+		
 		public var position_original:flash.geom.Point;
 		public var position_animate_to:flash.geom.Point;
 		
 		public function PieSlice( index:Number, value:Properties ) {
 		
-			this.colour = value.get('colour');
+			this.colour = value.get_colour('colour');
 			this.slice_angle = value.get('angle');
 			this.border_width = 1;
 			this.angle = value.get('start');
@@ -50,6 +62,7 @@
 			
 			this.label = this.replace_magic_values( value.get('label') );
 			this.tooltip = this.replace_magic_values( value.get('tip') );
+			
 			
 			// TODO: why is this commented out in the patch file?
 			// this.attach_events();
@@ -82,12 +95,54 @@
 			t = t.replace('#label#', this.label );
 			t = t.replace('#val#', NumberUtils.formatNumber( this.value ));
 			t = t.replace('#radius#', NumberUtils.formatNumber( this.pieRadius ));
+			
+			tt_updated_text = t;
+			if (tt_updated_text.indexOf("#img:") != -1) { 
+				var pattern:RegExp = /#img:(.*)#/ig; 
+				var fooBar1:Array = pattern.exec(tt_updated_text);
+				tt_image_name = fooBar1[1];
+				loadImage(tt_image_name);
+				tt_updated_text = tt_updated_text.replace(/#img:(.*)#/ig, "");
+				t = tt_updated_text + "<img src='" + tt_image_name + "' height='" + tt_image_height + "' width='" + tt_image_width + "' alt='' />";
+			}
+			
 			return t;
 		}
 		
 		public override function get_tooltip():String {
 			this.tooltip = this.replace_magic_values( this.rawToolTip );
 			return this.tooltip;
+		}
+	
+		private function loadImage(imageURL:String):void {
+			myLoader = new Loader();
+			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageHandler, false, 0, true);
+			myLoader.load(new URLRequest(imageURL));
+		}
+
+		private function imageHandler(evt:Event):void {
+			tt_image = Bitmap(myLoader.content);
+			imageResize(tt_image.height, tt_image.width);
+			//tt_updated_text = tt_updated_text + "<img src='" + tt_image_name + "' height='" + tt_image_height + "' width='" + tt_image_width + "' alt='' />";
+			//this.tooltip = tt_updated_text;
+		}
+		
+		private function imageResize(height:Number, width:Number):void {
+			var variable:Number;
+			if (height > max_image_size || width > max_image_size) {
+				if (height > width) {
+					variable = (max_image_size / height);
+					tt_image_height = int(variable * height);
+					tt_image_width = int(variable * width);
+				} else {
+					variable = (max_image_size / width);
+					tt_image_height = int(variable * height);
+					tt_image_width = int(variable * width);
+				}
+			} else {
+				tt_image_height = height;
+				tt_image_width = width;
+			}
 		}
 		
 		//
